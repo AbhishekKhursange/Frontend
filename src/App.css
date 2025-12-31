@@ -1,0 +1,71 @@
+.hover-zoom {
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.hover-zoom:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,.3);
+  cursor: pointer;
+}
+
+/* Orders page style */
+
+.order-container {
+  max-width: 900px;
+}
+
+.order-card {
+  border-radius: 20px;
+  padding: 20px;
+  border: none;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.view-btn {
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.heading-style {
+  font-size: 32px;
+  letter-spacing: 1px;
+}
+
+.item-title {
+  text-decoration: underline;
+}
+
+/* Home page style */
+.category-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.category-image {
+  height: 220px;  
+  object-fit: cover;
+}
+
+.category-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-body p {
+  flex-grow: 1;
+}
+
+.category-card .btn {
+  margin-top: auto;
+}
