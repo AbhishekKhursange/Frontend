@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import apiURL from "./axios";
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -12,25 +13,12 @@ function LoginForm() {
 
   const submitLogic = async (data) => {
     try {
-      const payload = {
+      const res = await apiURL.post("api/v1/products/login", {
       email: data.email.trim(),
       password: data.password.trim()
-    };
+    });
 
-      const res = await fetch("http://localhost:5000/api/v1/products/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const output = await res.json();
-
-      if (!res.ok) {
-        alert("Login failed: " + output.error);
-        return;
-      }
-
-      localStorage.setItem("user", JSON.stringify(output.user));
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       alert("Login Successful!");
       navigate("/home");

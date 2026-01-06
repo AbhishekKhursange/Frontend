@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Modal, Button } from "react-bootstrap";
+import apiURL from "./axios";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null); // ✅ NEW
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/v1/products/orders")
+    apiURL.get("/api/v1/products/orders")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.orders)) {

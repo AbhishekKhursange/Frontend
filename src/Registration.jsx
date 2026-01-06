@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import apiURL from "./axios";
 
 function RegistrationForm() {
   const navigate = useNavigate();
@@ -13,19 +14,7 @@ function RegistrationForm() {
 
   const submitLogic = async (data) => {
     try {
-      const res = await fetch("http://localhost:5000/api/v1/products/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const output = await res.json();
-
-      if (!res.ok) {
-        alert("Registration failed: " + output.error);
-        return;
-      }
-
+      await apiURL.post("/api/v1/products/register", data);
       alert("Registration Successful!");
       reset();
       navigate("/login");

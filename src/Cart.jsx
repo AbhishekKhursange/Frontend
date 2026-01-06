@@ -11,6 +11,7 @@ import QRCode from "react-qr-code";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import apiURL from "./axios";
 
 function Cart() {
   const cart = useSelector((state) => state.cart.items);
@@ -60,15 +61,7 @@ function Cart() {
   };
 
   try {
-    const response = await fetch("http://localhost:5000/api/v1/products/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(orderData),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to place order");
-    }
+    await apiURL.post("api/v1/products/orders", orderData);
 
     Swal.fire({
       icon: "success",
