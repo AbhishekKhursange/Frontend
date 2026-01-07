@@ -7,7 +7,7 @@ function Home() {
       {/* Hero Section */}
       <div className="p-5 mb-4 bg-light rounded-3 shadow">
         <div className="container-fluid py-4">
-          <h1 className="display-5 fw-bold">Welcome to Big Bumper Sell</h1>
+          <h1 className="display-5 fw-bold">Welcome to Cravings</h1>
           <p className="col-md-8 fs-5 mt-3">
             Enjoy fresh, delicious food delivered right to your doorstep.  
             Explore our Veg, Non-Veg, and Dairy categories and shop with ease!

@@ -7,19 +7,15 @@ function Orders() {
   const [selectedOrder, setSelectedOrder] = useState(null); // ✅ NEW
 
   useEffect(() => {
-    apiURL.get("/api/v1/products/orders")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.orders)) {
-          setOrders(data.orders);
-        } else {
-          setOrders(data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching orders:", error);
-      });
-  }, []);
+  apiURL
+    .get("/api/v1/products/orders")
+    .then((res) => {
+      setOrders(res.data.orders); // ✅ correct
+    })
+    .catch((error) => {
+      console.error("Error fetching orders:", error);
+    });
+}, []);
 
   return (
     <div className="container mt-4 order-container">
