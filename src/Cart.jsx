@@ -99,7 +99,7 @@ function Cart() {
         <>
           <div className="row">
             {cart.map((item) => (
-              <div className="col-md-6 mb-3" key={item.id}>
+              <div className="col-md-6 mb-3" key={item._id}>
                 <div className="card shadow-sm p-2">
                   <div className="d-flex align-items-center">
                     <img
@@ -120,7 +120,7 @@ function Cart() {
                       <div className="d-flex align-items-center mt-2">
                         <button
                           className="btn btn-sm btn-outline-danger"
-                          onClick={() => dispatch(decreaseQuantity(item.id))}
+                          onClick={() => dispatch(decreaseQuantity(item._id))}
                         >
                           –
                         </button>
@@ -129,14 +129,14 @@ function Cart() {
 
                         <button
                           className="btn btn-sm btn-outline-success"
-                          onClick={() => dispatch(increaseQuantity(item.id))}
+                          onClick={() => dispatch(increaseQuantity(item._id))}
                         >
                           +
                         </button>
 
                         <button
                           className="btn btn-sm btn-outline-danger ms-3"
-                          onClick={() => dispatch(removeFromCart(item.id))}
+                          onClick={() => dispatch(removeFromCart(item._id))}
                         >
                           Remove
                         </button>

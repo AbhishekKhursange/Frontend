@@ -1,69 +1,125 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "./Store";
 import Pagination from "./Pagination";
 import { getVegItems } from "./vegSlice";
 import { toast } from "react-toastify";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function Veg() {
-const dispatch = useDispatch();
-const { items, loading, error } = useSelector((state) => state.veg);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { items, loading, error } = useSelector((state) => state.veg);
+  const cartItems = useSelector((state) => state.cart.items);
 
-const [currentPage, setCurrentPage] = useState(1);
-const itemsPerPage = 8;
+  const itemsPerPage = 8;
+  const [currentPage, setCurrentPage] = useState(1);
 
-useEffect(() => {
-dispatch(getVegItems());
-}, [dispatch]);
+  const [searchParams] = useSearchParams();
+  const productId = searchParams.get("id");
+  const itemRefs = useRef({});
 
-const indexOfLast = currentPage * itemsPerPage;
-const indexOfFirst = indexOfLast - itemsPerPage;
-const currentItems = items.slice(indexOfFirst, indexOfLast);
+  useEffect(() => {
+    if (!items.length) dispatch(getVegItems());
+  }, [dispatch, items.length]);
 
-const handleAdd = (item) => {
+  useEffect(() => {
+    if (!productId || !items.length) return;
+    const index = items.findIndex(i => i._id === productId);
+    if (index !== -1) {
+      setCurrentPage(Math.floor(index / itemsPerPage) + 1);
+    }
+  }, [productId, items]);
+
+  useEffect(() => {
+    if (!productId) return;
+
+    const el = itemRefs.current[productId];
+    if (!el) return;
+
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    el.classList.add("highlight-item");
+
+    const timer = setTimeout(() => {
+      el.classList.remove("highlight-item");
+    }, 2200);
+
+    return () => clearTimeout(timer);
+  }, [currentPage, productId]);
+
+
+  const currentItems = items.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleAdd = (item) => {
+    const user = localStorage.getItem("user");
+
+    if (!user) {
+      toast.info("Please login to add items to cart", { autoClose: 1200 });
+      navigate("/login");
+      return;
+    }
     dispatch(addToCart(item));
-    toast.success(`${item.name} added to cart!`, { autoClose: 1500 });
+    toast.success("Item added successfully", { autoClose: 1200 });
   };
 
-return (
-<div className="container mt-4">
-<h2 className="text-center fw-bold">Veg Items</h2>
+  const isInCart = (id) => cartItems.some(i => i._id === id);
 
-  {loading && <h3>Loading...</h3>}
-  {error && <h3 className="text-danger">{error}</h3>}
+  return (
+    <div className="container py-4">
+      <h2 className="text-center fw-bold mb-4">🥗 Veg Items</h2>
 
-  <div className="row">
-    {currentItems.map((item) => (
-      <div className="col-md-3 mb-4" key={item._id}>
-        <div className="card shadow-lg h-100 hover-zoom">
-          <img
-            src={item.img}
-            className="card-img-top"
-            alt={item.name}
-            style={{ height: 160, objectFit: "cover" }}
-          />
-          <div className="card-body">
-            <h5>{item.name}</h5>
-            <p className="text-success fw-bold">₹{item.price}</p>
-            <button
-              className="btn btn-success w-100"
-              onClick={() => handleAdd(item)}
-            >
-              Add To Cart
-            </button>
-          </div>
-        </div>
+      {loading && <h3>Loading...</h3>}
+      {error && <h3 className="text-danger">{error}</h3>}
+
+      <div className="row">
+        {currentItems.map((item) => {
+          const added = isInCart(item._id);
+
+          return (
+            <div className="col-md-3 mb-4" key={item._id} ref={el => itemRefs.current[item._id] = el}>
+              <div className="card h-100 card-hover">
+                <img
+                  src={item.img}
+                  className="card-img-top"
+                  alt={item.name}
+                  style={{
+                    height: "180px",
+                    objectFit: "cover"
+                  }}
+                />
+
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title">{item.name}</h5>
+
+                  <p className="fw-bold text-success mb-2">₹{item.price}</p>
+
+                  <button
+                    className={`btn mt-auto w-100 ${added ? "btn-secondary" : "btn-success"
+                      }`}
+                    disabled={added}
+                    onClick={() => handleAdd(item)}
+                  >
+                    {added ? "Added" : "Add To Cart"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
-    ))}
-  </div>
 
-  <Pagination
-    currentPage={currentPage}
-    totalItems={items.length}
-    itemsPerPage={itemsPerPage}
-    setCurrentPage={setCurrentPage}
-  />
-</div>
-);
+      <Pagination
+        currentPage={currentPage}
+        totalItems={items.length}
+        itemsPerPage={itemsPerPage}
+        setCurrentPage={setCurrentPage}
+      />
+    </div>
+  );
 }
+
 export default Veg;
